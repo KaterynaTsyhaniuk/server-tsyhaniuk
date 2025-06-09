@@ -1,0 +1,35 @@
+{
+  "name": "server-tsyhaniuk",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint src/**/*.js",
+    "start": "node ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KaterynaTsyhaniuk/server-tsyhaniuk.git"
+  },
+  "keywords": [],
+  "author": "Kateryna Tsyhaniuk <kyzkakatryska@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KaterynaTsyhaniuk/server-tsyhaniuk/issues"
+  },
+  "homepage": "https://github.com/KaterynaTsyhaniuk/server-tsyhaniuk#readme",
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "eslint": "^9.28.0",
+    "globals": "^16.2.0",
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "nodemailer": "^7.0.3"
+  }
+}
