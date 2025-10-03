@@ -18,11 +18,14 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+// 🔹 Transporter для Brevo
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp-relay.brevo.com',
+  port: 587,
+  secure: false, // true для 465, false для 587
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.BREVO_USER, // твій Login (85599a001@smtp-brevo.com)
+    pass: process.env.BREVO_PASS, // SMTP ключ (наприклад NodeJs109...)
   },
 });
 
@@ -30,8 +33,8 @@ app.post('/send-email', async (req, res) => {
   const { email, comment } = req.body;
 
   const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: process.env.EMAIL_TO,
+    from: process.env.BREVO_USER,
+    to: process.env.EMAIL_TO, // Куди надсилати (твоя основна пошта)
     subject: 'New Form Submission',
     text: `📬 New form submission:\n\nEmail: ${email}\nComment: ${comment}`,
   };
