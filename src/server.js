@@ -7,7 +7,16 @@ dotenv.config();
 const app = express();
 const PORT = 3000;
 
-app.use(cors());
+// Explicit CORS configuration
+const corsOptions = {
+  origin: ['https://katerynatsyhaniuk.github.io', 'http://localhost:5173'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 
 const transporter = nodemailer.createTransport({
