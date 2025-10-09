@@ -1,46 +1,43 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import nodemailer from 'nodemailer';
+import fetch from 'node-fetch';
 
 dotenv.config();
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Explicit CORS configuration
-const corsOptions = {
-  origin: ['https://katerynatsyhaniuk.github.io', 'http://localhost:5173'],
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: ['https://katerynatsyhaniuk.github.io', 'http://localhost:5173'],
+  }),
+);
 app.use(express.json());
 
-// 🔹 Transporter для Brevo
-const transporter = nodemailer.createTransport({
-  host: 'smtp-relay.brevo.com',
-  port: 587,
-  secure: false, // true для 465, false для 587
-  auth: {
-    user: process.env.BREVO_USER, // твій Login (85599a001@smtp-brevo.com)
-    pass: process.env.BREVO_PASS, // SMTP ключ (наприклад NodeJs109...)
-  },
-});
-
+// Використовуємо Brevo API
 app.post('/send-email', async (req, res) => {
   const { email, comment } = req.body;
 
-  const mailOptions = {
-    from: process.env.BREVO_USER,
-    to: process.env.EMAIL_TO, // Куди надсилати (твоя основна пошта)
-    subject: 'New Form Submission',
-    text: `📬 New form submission:\n\nEmail: ${email}\nComment: ${comment}`,
-  };
-
   try {
-    await transporter.sendMail(mailOptions);
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'api-key': process.env.BREVO_API_KEY,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender: { email: process.env.BREVO_USER },
+        to: [{ email: process.env.EMAIL_TO }],
+        subject: 'New Form Submission',
+        textContent: `📬 New form submission:\n\nEmail: ${email}\nComment: ${comment}`,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Brevo API error: ${response.statusText}`);
+    }
+
     res
       .status(200)
       .json({ title: 'Success!', message: 'Message sent successfully.' });
